@@ -14,7 +14,7 @@ version: 4.0.0
 
 # SEO Audit Skill, powered by Mavek
 
-Install and setup: see the README at https://github.com/OWNER/claude-seo-audit
+Install and setup: see the README at https://github.com/mavekjeet/claude-seo-audit
 
 ---
 

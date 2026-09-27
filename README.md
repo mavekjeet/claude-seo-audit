@@ -23,14 +23,14 @@ The first 5 agents work with zero setup. The last 2 switch on when you add DataF
 As a plugin (inside Claude Code):
 
 ```
-/plugin marketplace add OWNER/claude-seo-audit
+/plugin marketplace add mavekjeet/claude-seo-audit
 /plugin install seo-audit@claude-seo-audit
 ```
 
 Or just copy the skill file:
 
 ```bash
-mkdir -p ~/.claude/skills/seo-audit && curl -sL https://raw.githubusercontent.com/OWNER/claude-seo-audit/main/skills/seo-audit/SKILL.md -o ~/.claude/skills/seo-audit/SKILL.md
+mkdir -p ~/.claude/skills/seo-audit && curl -sL https://raw.githubusercontent.com/mavekjeet/claude-seo-audit/main/skills/seo-audit/SKILL.md -o ~/.claude/skills/seo-audit/SKILL.md
 ```
 
 ## Use
