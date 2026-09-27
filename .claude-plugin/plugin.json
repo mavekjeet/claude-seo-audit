@@ -1,0 +1,9 @@
+{
+  "name": "seo-audit",
+  "description": "Full SEO + AEO audit of any website from Claude Code. 7 parallel agents: page speed, on-page, broken links, orphans, AI search readiness, competitors, keyword clusters.",
+  "version": "4.0.0",
+  "author": { "name": "Jeet Bhanushali", "url": "https://iojeet.com" },
+  "homepage": "https://mavek.ai",
+  "license": "MIT",
+  "keywords": ["seo", "aeo", "geo", "audit", "core-web-vitals", "claude-code", "skill"]
+}

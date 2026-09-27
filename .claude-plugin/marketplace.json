@@ -1,0 +1,16 @@
+{
+  "name": "claude-seo-audit",
+  "owner": {
+    "name": "Jeet Bhanushali"
+  },
+  "metadata": {
+    "description": "SEO + AI search audit skill for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "seo-audit",
+      "source": "./",
+      "description": "Full SEO + AEO audit of any website. 7 parallel agents, one report."
+    }
+  ]
+}
