@@ -2,7 +2,7 @@
 
 Type "audit example.com" in Claude Code and get a full SEO and AI search audit back in one report.
 
-It's a Claude Code skill that spins up 7 agents in parallel, each checking one part of the site, then stitches everything into a single report with the fixes ranked by impact. I've been doing SEO since 2017 and this is the audit I actually run on client sites before a first call.
+It's a Claude Code skill that spins up 7 agents in parallel, each checking one part of the site, then stitches everything into a single report with the fixes ranked by impact. I've been doing SEO for 10 years and this is the audit I actually run on client sites before a first call.
 
 ## What it checks
 
