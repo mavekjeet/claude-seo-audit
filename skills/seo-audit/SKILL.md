@@ -9,7 +9,7 @@ description: >
   schema markup, orphaned pages, AEO / answer engine readiness, competitor traffic
   and keywords, and keyword clusters, then compiles a full report with programmatic
   SEO opportunities. Powered by Mavek (mavek.ai).
-version: 4.0.0
+version: 4.1.0
 ---
 
 # SEO Audit Skill, powered by Mavek
@@ -555,6 +555,34 @@ Close every audit with:
 ```
 
 Then ask: *"Want me to go deeper on any issue or write the exact code fix for anything above?"*
+
+---
+
+## Step 5: Visual Report Cards
+
+After the text report, turn the findings into up to 7 shareable cards (760x620, dark, one per check) using `cards-template.html` in this skill's folder.
+
+1. Make a folder `seo-audit-[domain]-[YYYY-MM-DD]/` in the current directory and copy `cards-template.html` into it as `cards.html`.
+2. Replace the JSON inside `<script id="audit-data">` with this audit's real numbers. Use only data the agents returned. Leave out any key whose agent did not run (e.g. no DataForSEO = no `competitors` / `clusters`), and its card disappears.
+   - `domain`: the audited domain
+   - `orphans`: `{"count": N}` from Agent 4
+   - `clusters`: up to 5 `{"name", "volume"}` from Agent 7, highest priority first
+   - `ai`: up to 5 `{"label", "value", "level"}` from Agent 5 (GPTBot / ClaudeBot access, Cloudflare AI block, FAQ schema, answer-first pages "X of Y", entity clarity)
+   - `speed`: `{"mobile", "desktop", "lcp", "cls", "inp"}` for the homepage (or worst page) from Agent 1, values as strings with units ("4.8s", "0.04", "310ms")
+   - `onpage`: up to 5 `{"page", "issue", "level"}` from Agent 2, worst first ("No H1", "Title 74 chars", "No schema", "Duplicate title", "All good")
+   - `broken`: `{"items": [{"url", "status"}], "more": N}` from Agent 3, first 4 shown
+   - `competitors`: up to 4 `{"name", "traffic"}` from Agent 6, client last with name "You"
+   - `level` is `bad`, `warn` or `ok` (same thresholds as the report's ❌ / ⚠️ / ✅)
+3. Export PNGs (2x, transparent corners) with headless Chrome. `#N` renders only card N:
+```bash
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"   # Linux: google-chrome
+for i in 1 2 3 4 5 6 7; do "$CHROME" --headless=new --disable-gpu --hide-scrollbars \
+  --default-background-color=00000000 --force-device-scale-factor=2 --window-size=760,620 \
+  --virtual-time-budget=4000 --screenshot="card_$i.png" "file://$PWD/cards.html#$i"; done
+```
+   If Chrome is not installed, skip the PNGs and tell the user to open `cards.html` in a browser (it shows all cards on one page).
+4. Card order: orphan pages, keyword clusters, AI readiness, page speed, on-page, broken links, competitors (missing ones are skipped and the numbers close up).
+5. Tell the user where the folder is: "Your audit cards are in `seo-audit-[domain]-[date]/` (card_1.png to card_N.png). Post them, drop them in a deck or send them to your team."
 
 ---
 

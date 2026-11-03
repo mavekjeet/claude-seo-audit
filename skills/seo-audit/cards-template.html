@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO audit cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:transparent}
+body.all{background:#6b6b6b;padding:20px;display:flex;flex-wrap:wrap;gap:20px}
+.card{width:760px;height:620px;border-radius:40px;padding:44px 48px;font-family:'Inter Tight',system-ui,sans-serif;color:#fff;
+ background:radial-gradient(120% 80% at 100% 0%,rgba(255,212,0,.16),transparent 55%),linear-gradient(160deg,#1a1d24,#0b0c10);
+ border:2px solid rgba(255,255,255,.12);position:relative;overflow:hidden}
+.top{display:flex;align-items:center;gap:16px;margin-bottom:30px}
+.num{width:58px;height:58px;border-radius:14px;background:#FFD400;color:#111;font-weight:800;font-size:32px;display:flex;align-items:center;justify-content:center}
+.lab{font-weight:800;font-size:40px;letter-spacing:-.5px}
+.sub{font-weight:600;font-size:22px;color:rgba(255,255,255,.55);margin-top:2px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;border-radius:18px;background:rgba(255,255,255,.06);margin-bottom:12px;font-weight:600;font-size:26px}
+.row span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:23px}
+.bad{color:#ff5a52}.ok{color:#3ddc84}.warn{color:#FFD400}
+.chip{flex:none;font-weight:800;font-size:20px;padding:6px 14px;border-radius:999px}
+.chip.bad{background:rgba(255,90,82,.16)}.chip.ok{background:rgba(61,220,132,.16)}.chip.warn{background:rgba(255,212,0,.16)}
+.foot{position:absolute;left:48px;bottom:30px;font-weight:600;font-size:20px;color:rgba(255,255,255,.4)}
+.empty{font-weight:700;font-size:30px;color:#3ddc84;margin-top:120px;text-align:center}
+</style>
+</head>
+<body>
+<script id="audit-data" type="application/json">
+{
+  "domain": "example.com",
+  "speed": {"mobile": 38, "desktop": 71, "lcp": "4.8s", "cls": "0.04", "inp": "310ms"},
+  "onpage": [
+    {"page": "/pricing", "issue": "No H1", "level": "bad"},
+    {"page": "/blog/guide", "issue": "Title 74 chars", "level": "warn"},
+    {"page": "/features", "issue": "No schema", "level": "bad"},
+    {"page": "/", "issue": "All good", "level": "ok"},
+    {"page": "/about", "issue": "Duplicate title", "level": "bad"}
+  ],
+  "broken": {"items": [{"url": "/old-pricing", "status": 404}, {"url": "/blog/2023-launch", "status": 404}, {"url": "/docs/v1/setup", "status": 404}, {"url": "/partners", "status": 500}], "more": 19},
+  "orphans": {"count": 12},
+  "ai": [
+    {"label": "GPTBot in robots.txt", "value": "Blocked", "level": "bad"},
+    {"label": "Cloudflare AI block", "value": "On", "level": "bad"},
+    {"label": "PerplexityBot", "value": "Allowed", "level": "ok"},
+    {"label": "FAQ schema", "value": "Missing", "level": "warn"},
+    {"label": "Answer-first intros", "value": "2 of 40", "level": "warn"}
+  ],
+  "competitors": [{"name": "competitor-a.com", "traffic": 182000}, {"name": "competitor-b.com", "traffic": 96000}, {"name": "competitor-c.com", "traffic": 41000}, {"name": "You", "traffic": 9000}],
+  "clusters": [{"name": "pricing", "volume": 8100}, {"name": "alternatives", "volume": 5400}, {"name": "vs pages", "volume": 3200}, {"name": "how to", "volume": 2600}, {"name": "templates", "volume": 1900}]
+}
+</script>
+<script>
+const D = JSON.parse(document.getElementById('audit-data').textContent);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const k = n => n >= 1000 ? (n/1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/,'') + 'k' : String(n);
+const head = (n, lab, sub) => `<div class="top"><div class="num">${n}</div><div><div class="lab">${lab}</div><div class="sub">${sub}</div></div></div>`;
+const rows = (items, mono) => items.slice(0,5).map(r => `<div class="row"><span class="${mono?'mono':''}">${esc(r[0])}</span><span class="chip ${r[2]}">${esc(r[1])}</span></div>`).join('');
+const lvl = (v, good, poor, lowerBetter) => lowerBetter ? (v <= good ? 'ok' : v > poor ? 'bad' : 'warn') : (v >= good ? 'ok' : v < poor ? 'bad' : 'warn');
+const colour = {ok:'#3ddc84', warn:'#FFD400', bad:'#ff5a52'};
+function gauge(v, label) {
+  const r = 78, L = 2*Math.PI*r, c = colour[lvl(v, 90, 50)];
+  return `<div style="text-align:center"><svg width="190" height="190" viewBox="0 0 190 190"><circle cx="95" cy="95" r="${r}" stroke="rgba(255,255,255,.1)" stroke-width="16" fill="none"/>
+  <circle cx="95" cy="95" r="${r}" stroke="${c}" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="${L*v/100} ${L}" transform="rotate(-90 95 95)"/>
+  <text x="95" y="112" text-anchor="middle" font-family="Inter Tight" font-weight="800" font-size="56" fill="#fff">${v}</text></svg>
+  <div style="font-weight:700;font-size:24px;color:rgba(255,255,255,.7)">${label}</div></div>`;
+}
+const cards = [];
+// reel order (Jeet 2026-11-03): orphans, clusters, ChatGPT first
+if (D.orphans) {
+  const o = D.orphans.count, shown = [[600,90],[590,310],[250,330]].slice(0, Math.min(o,3));
+  cards.push(head(cards.length+1, 'Orphan pages', 'in your sitemap, linked from nowhere') + `<svg width="664" height="380" viewBox="0 0 664 380">
+  <g stroke="rgba(255,255,255,.25)" stroke-width="3"><line x1="332" y1="70" x2="170" y2="190"/><line x1="332" y1="70" x2="332" y2="190"/><line x1="332" y1="70" x2="494" y2="190"/><line x1="170" y1="190" x2="110" y2="300"/><line x1="494" y1="190" x2="440" y2="300"/></g>
+  <g fill="#2a2e37" stroke="rgba(255,255,255,.35)" stroke-width="3"><circle cx="332" cy="70" r="34"/><circle cx="170" cy="190" r="26"/><circle cx="332" cy="190" r="26"/><circle cx="494" cy="190" r="26"/><circle cx="110" cy="300" r="22"/><circle cx="440" cy="300" r="22"/></g>
+  <text x="332" y="78" text-anchor="middle" font-family="Inter Tight" font-weight="800" font-size="22" fill="#fff">home</text>
+  <g fill="rgba(255,90,82,.18)" stroke="#ff5a52" stroke-width="3" stroke-dasharray="7 6">${shown.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="26"/>`).join('')}</g>
+  <text x="636" y="40" text-anchor="end" font-family="Inter Tight" font-weight="800" font-size="24" fill="${o ? '#ff5a52' : '#3ddc84'}">${o ? o + (o === 1 ? ' orphan' : ' orphans') : 'No orphans'}</text></svg>`);
+}
+if (D.clusters && D.clusters.length) {
+  const spots = [[20,40,230,30],[270,0,190,26],[480,70,170,24],[250,200,170,24],[440,240,140,22]];
+  cards.push(head(cards.length+1, 'Keyword clusters', 'the topics you should own') + '<div style="position:relative;height:380px">' +
+    D.clusters.slice(0,5).map((c, i) => { const [x,y,s,fs] = spots[i], top = i === 0;
+      return `<div style="position:absolute;left:${x}px;top:${y}px;width:${s}px;height:${s}px;border-radius:50%;background:${top?'rgba(255,212,0,.16)':'rgba(255,255,255,.07)'};border:2px solid ${top?'#FFD400':'rgba(255,255,255,.3)'};display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:${fs}px;line-height:1.1;padding:0 12px">${esc(c.name)}<span style="font-weight:600;font-size:${fs-6}px;color:rgba(255,255,255,.6);margin-top:4px">${k(c.volume)}/mo</span></div>`;
+    }).join('') + '</div>');
+}
+if (D.ai) cards.push(head(cards.length+1, 'Can ChatGPT read you?', 'AI crawlers and answer-ready content') + rows(D.ai.map(r => [r.label, r.value, r.level])));
+if (D.speed) {
+  const s = D.speed, n = x => parseFloat(x);
+  const m = [['LCP', s.lcp, lvl(n(s.lcp), 2.5, 4, true)], ['CLS', s.cls, lvl(n(s.cls), .1, .25, true)], ['INP', s.inp, lvl(n(s.inp), 200, 500, true)]].filter(x => x[1] != null);
+  cards.push(head(cards.length+1, 'Page speed', 'Core Web Vitals, mobile') +
+    `<div style="display:flex;justify-content:space-around;margin-top:6px">${gauge(s.mobile,'Mobile')}${s.desktop!=null?gauge(s.desktop,'Desktop'):''}</div>` +
+    `<div style="display:flex;gap:12px;margin-top:26px">${m.map(x => `<div class="row" style="flex:1">${x[0]} <span class="${x[2]}">${esc(x[1])}</span></div>`).join('')}</div>`);
+}
+if (D.onpage) cards.push(head(cards.length+1, 'Titles, H1s, schema', 'on-page check') + rows(D.onpage.map(r => [r.page, r.issue, r.level])));
+if (D.broken) {
+  const b = D.broken;
+  cards.push(head(cards.length+1, 'Broken links', 'every internal link crawled') + (b.items.length
+    ? rows(b.items.slice(0,4).map(r => [r.url, r.status, 'bad']), true) + (b.more ? `<div class="row" style="justify-content:center;font-size:22px;color:rgba(255,255,255,.55)">+ ${b.more} more</div>` : '')
+    : `<div class="empty">No broken links found</div>`));
+}
+if (D.competitors && D.competitors.length) {
+  const max = Math.max(...D.competitors.map(c => c.traffic)) || 1;
+  cards.push(head(cards.length+1, 'Competitor traffic', 'monthly organic visits') + D.competitors.slice(0,4).map(c => {
+    const you = c.name === 'You', w = Math.max(3, Math.round(100*c.traffic/max));
+    return `<div style="margin-bottom:18px"><div style="display:flex;justify-content:space-between;font-weight:700;font-size:24px;margin-bottom:8px"><span>${esc(c.name)}</span><span style="color:rgba(255,255,255,.7)">${k(c.traffic)}</span></div>
+    <div style="height:26px;border-radius:13px;background:rgba(255,255,255,.08)"><div style="height:26px;border-radius:13px;width:${w}%;background:${you ? '#FFD400' : 'rgba(255,255,255,.45)'}"></div></div></div>`;
+  }).join(''));
+}
+// #3 shows only card 3 (for PNG export); no hash shows every card
+const pick = parseInt(location.hash.slice(1), 10);
+const list = pick ? [cards[pick-1]].filter(Boolean) : cards;
+if (!pick) document.body.className = 'all';
+document.body.insertAdjacentHTML('beforeend', list.map(c => `<div class="card">${c}<div class="foot">${esc(D.domain)} · SEO audit</div></div>`).join(''));
+document.title = `SEO audit cards: ${D.domain} (${cards.length})`;
+</script>
+</body>
+</html>

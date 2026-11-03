@@ -18,6 +18,11 @@ It's a Claude Code skill that spins up 7 agents in parallel, each checking one p
 
 The first 5 agents work with zero setup. The last 2 switch on when you add DataForSEO credentials.
 
+## What you get
+
+1. A full text report in Claude Code: scores, critical issues, quick wins, AEO findings, competitor gap, keyword clusters, next steps.
+2. Up to 7 visual cards (PNG) built from your real numbers: orphan pages, keyword clusters, AI readiness, page speed, on-page issues, broken links, competitor traffic. Ready to post or drop in a deck (needs Chrome for the PNGs, otherwise open `cards.html`).
+
 ## Install
 
 As a plugin (inside Claude Code):
@@ -27,10 +32,10 @@ As a plugin (inside Claude Code):
 /plugin install seo-audit@claude-seo-audit
 ```
 
-Or just copy the skill file:
+Or just copy the skill files:
 
 ```bash
-mkdir -p ~/.claude/skills/seo-audit && curl -sL https://raw.githubusercontent.com/mavekjeet/claude-seo-audit/main/skills/seo-audit/SKILL.md -o ~/.claude/skills/seo-audit/SKILL.md
+mkdir -p ~/.claude/skills/seo-audit && curl -sL https://raw.githubusercontent.com/mavekjeet/claude-seo-audit/main/skills/seo-audit/SKILL.md -o ~/.claude/skills/seo-audit/SKILL.md && curl -sL https://raw.githubusercontent.com/mavekjeet/claude-seo-audit/main/skills/seo-audit/cards-template.html -o ~/.claude/skills/seo-audit/cards-template.html
 ```
 
 ## Use
